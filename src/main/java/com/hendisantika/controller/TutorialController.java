@@ -1,10 +1,18 @@
 package com.hendisantika.controller;
 
+import com.hendisantika.entity.Tutorial;
 import com.hendisantika.repository.TutorialRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,4 +31,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class TutorialController {
 
     private final TutorialRepository tutorialRepository;
+
+    @GetMapping("/tutorials")
+    public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
+        List<Tutorial> tutorials = new ArrayList<Tutorial>();
+
+        if (title == null)
+            tutorialRepository.findAll().forEach(tutorials::add);
+        else
+            tutorialRepository.findByTitleContaining(title).forEach(tutorials::add);
+
+        if (tutorials.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(tutorials, HttpStatus.OK);
+    }
 }
