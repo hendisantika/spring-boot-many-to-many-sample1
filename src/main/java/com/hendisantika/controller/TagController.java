@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,5 +76,27 @@ public class TagController {
 
         List<Tutorial> tutorials = tutorialRepository.findTutorialsByTagsId(tagId);
         return new ResponseEntity<>(tutorials, HttpStatus.OK);
+    }
+
+    @PostMapping("/tutorials/{tutorialId}/tags")
+    public ResponseEntity<Tag> addTag(@PathVariable(value = "tutorialId") Long tutorialId, @RequestBody Tag tagRequest) {
+        Tag tag = tutorialRepository.findById(tutorialId).map(tutorial -> {
+            long tagId = tagRequest.getId();
+
+            // tag is existed
+            if (tagId != 0L) {
+                Tag _tag = tagRepository.findById(tagId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Not found Tag with id = " + tagId));
+                tutorial.addTag(_tag);
+                tutorialRepository.save(tutorial);
+                return _tag;
+            }
+
+            // add and create new Tag
+            tutorial.addTag(tagRequest);
+            return tagRepository.save(tagRequest);
+        }).orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + tutorialId));
+
+        return new ResponseEntity<>(tag, HttpStatus.CREATED);
     }
 }
