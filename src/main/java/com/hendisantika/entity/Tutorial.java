@@ -1,5 +1,6 @@
 package com.hendisantika.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,6 +57,7 @@ public class Tutorial {
     @JoinTable(name = "tutorial_tags",
             joinColumns = {@JoinColumn(name = "tutorial_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    @JsonIgnore
     private Set<Tag> tags = new HashSet<>();
 
     public Tutorial(String title, String description, boolean published) {
