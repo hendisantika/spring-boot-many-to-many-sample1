@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 11:23
  * To change this template use File | Settings | File Templates.
  */
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
