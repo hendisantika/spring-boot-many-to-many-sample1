@@ -1,6 +1,7 @@
 package com.hendisantika.controller;
 
 import com.hendisantika.entity.Tag;
+import com.hendisantika.entity.Tutorial;
 import com.hendisantika.exception.ResourceNotFoundException;
 import com.hendisantika.repository.TagRepository;
 import com.hendisantika.repository.TutorialRepository;
@@ -63,5 +64,15 @@ public class TagController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Tag with id = " + id));
 
         return new ResponseEntity<>(tag, HttpStatus.OK);
+    }
+
+    @GetMapping("/tags/{tagId}/tutorials")
+    public ResponseEntity<List<Tutorial>> getAllTutorialsByTagId(@PathVariable(value = "tagId") Long tagId) {
+        if (!tagRepository.existsById(tagId)) {
+            throw new ResourceNotFoundException("Not found Tag  with id = " + tagId);
+        }
+
+        List<Tutorial> tutorials = tutorialRepository.findTutorialsByTagsId(tagId);
+        return new ResponseEntity<>(tutorials, HttpStatus.OK);
     }
 }
