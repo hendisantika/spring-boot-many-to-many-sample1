@@ -1,12 +1,14 @@
 package com.hendisantika.controller;
 
 import com.hendisantika.entity.Tutorial;
+import com.hendisantika.exception.ResourceNotFoundException;
 import com.hendisantika.repository.TutorialRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +48,13 @@ public class TutorialController {
         }
 
         return new ResponseEntity<>(tutorials, HttpStatus.OK);
+    }
+
+    @GetMapping("/tutorials/{id}")
+    public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
+        Tutorial tutorial = tutorialRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
+
+        return new ResponseEntity<>(tutorial, HttpStatus.OK);
     }
 }
