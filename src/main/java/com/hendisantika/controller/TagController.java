@@ -1,6 +1,7 @@
 package com.hendisantika.controller;
 
 import com.hendisantika.entity.Tag;
+import com.hendisantika.exception.ResourceNotFoundException;
 import com.hendisantika.repository.TagRepository;
 import com.hendisantika.repository.TutorialRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +44,16 @@ public class TagController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
+        return new ResponseEntity<>(tags, HttpStatus.OK);
+    }
+
+    @GetMapping("/tutorials/{tutorialId}/tags")
+    public ResponseEntity<List<Tag>> getAllTagsByTutorialId(@PathVariable(value = "tutorialId") Long tutorialId) {
+        if (!tutorialRepository.existsById(tutorialId)) {
+            throw new ResourceNotFoundException("Not found Tutorial with id = " + tutorialId);
+        }
+
+        List<Tag> tags = tagRepository.findTagsByTutorialsId(tutorialId);
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 }
