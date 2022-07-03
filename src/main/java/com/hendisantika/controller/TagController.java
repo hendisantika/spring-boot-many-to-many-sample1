@@ -122,4 +122,11 @@ public class TagController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/tags/{id}")
+    public ResponseEntity<HttpStatus> deleteTag(@PathVariable("id") long id) {
+        tagRepository.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
