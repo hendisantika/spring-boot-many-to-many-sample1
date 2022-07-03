@@ -56,4 +56,12 @@ public class TagController {
         List<Tag> tags = tagRepository.findTagsByTutorialsId(tutorialId);
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
+
+    @GetMapping("/tags/{id}")
+    public ResponseEntity<Tag> getTagsById(@PathVariable(value = "id") Long id) {
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Tag with id = " + id));
+
+        return new ResponseEntity<>(tag, HttpStatus.OK);
+    }
 }
