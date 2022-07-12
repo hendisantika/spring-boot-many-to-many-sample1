@@ -2,10 +2,13 @@ package com.hendisantika.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,9 +32,11 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "tags")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Tag {
 
     @Id
@@ -41,13 +46,17 @@ public class Tag {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
-            mappedBy = "tags")
+    //    @ManyToMany(fetch = FetchType.EAGER,
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            },
+//            mappedBy = "tags")
+//    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JsonIgnore
+    @ToString.Exclude
     private Set<Tutorial> tutorials = new HashSet<>();
 
 }

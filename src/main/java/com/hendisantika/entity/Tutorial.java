@@ -1,14 +1,15 @@
 package com.hendisantika.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,9 +32,11 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "tutorials")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Tutorial {
 
     @Id
@@ -49,15 +52,18 @@ public class Tutorial {
     @Column(name = "published")
     private boolean published;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
+    //    @ManyToMany(fetch = FetchType.EAGER,
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            })
+    @ManyToMany
     @JoinTable(name = "tutorial_tags",
             joinColumns = {@JoinColumn(name = "tutorial_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-    @JsonIgnore
+//    @JsonIgnore
+    @Fetch(FetchMode.JOIN)
+    @ToString.Exclude
     private Set<Tag> tags = new HashSet<>();
 
     public Tutorial(String title, String description, boolean published) {
